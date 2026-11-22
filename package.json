@@ -1,0 +1,90 @@
+{
+  "name": "4x-speed-mp4-player",
+  "version": "0.0.1",
+  "description": "MP4 player with 1.00x-4.00x playback speed (desktop, Electron)",
+  "private": true,
+  "author": "T.ishii",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:renderer": "vite build",
+    "build:electron": "tsc -p tsconfig.electron.json",
+    "build": "tsc --noEmit -p tsconfig.json && npm run build:renderer && npm run build:electron",
+    "start": "npm run build && electron .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "5.2.0",
+    "electron": "45.4.1",
+    "electron-builder": "26.18.0",
+    "jsdom": "26.1.0",
+    "typescript": "7.0.2",
+    "vite": "7.3.8",
+    "vitest": "3.2.4"
+  },
+  "build": {
+    "appId": "local.4x-speed-mp4-player",
+    "productName": "4x-speed-mp4-player",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "distribution/INSTALL.txt",
+        "to": "INSTALL.txt"
+      }
+    ],
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "AudioVideo"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "identity": null
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
+  }
+}

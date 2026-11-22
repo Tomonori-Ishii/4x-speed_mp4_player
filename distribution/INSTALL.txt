@@ -1,0 +1,17 @@
+4x-speed-mp4-player - installation notes
+=========================================
+
+This app is not code-signed. The first launch may show a warning.
+
+macOS (dmg, Apple silicon, M1 or later)
+  1. Open the .dmg and drag the app into Applications.
+  2. The first launch is blocked. Open System Settings > Privacy & Security,
+     then press "Open Anyway" for this app and confirm.
+
+Windows (NSIS installer, x64)
+  1. Run the installer. SmartScreen may show "Windows protected your PC".
+  2. Click "More info", then "Run anyway".
+
+Linux (AppImage, x64 or arm64)
+  1. Make the file executable:   chmod +x 4x-speed-mp4-player-*.AppImage
+  2. Start it with a double-click or from a terminal.

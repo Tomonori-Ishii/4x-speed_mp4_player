@@ -54,6 +54,43 @@ MP4 動画を 1.00x〜4.00x の範囲で 0.25 刻みの速度を指定して再�
 - 再生は HTML5 `<video>`、音量は Web Audio の GainNode
 - 配布は electron-builder
 
+## 実行方法
+
+### 必要なもの
+
+- Node.js（LTS 版）と npm
+- E2E テストを実行する場合のみ: ffmpeg（libx264 と AAC のエンコーダーを含むもの）
+
+### 手順
+
+```bash
+npm install
+```
+
+アプリを起動します（ビルドしてから Electron で開きます）。
+
+```bash
+npm start
+```
+
+テストを実行します。
+
+```bash
+npm test          # 単体・コンポーネントテスト（Vitest）
+npm run test:e2e  # E2E テスト（Playwright）。初回は ffmpeg で e2e/fixtures/ にテスト用 MP4 を生成します
+```
+
+配布用パッケージを `release/` に作成します。
+
+```bash
+npm run dist
+```
+
+### その他
+
+- `npm run dev` は Vite の開発サーバーだけを起動します。ブラウザで画面を確認するためのものです。ウィンドウや単一起動などの Electron 側の動作は確認できません。Electron で確認するには `npm start` を使います。
+- 型チェックとビルドは `npm run build` で行えます。
+
 ## 配布対象
 
 | OS | 形式 | アーキテクチャ |

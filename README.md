@@ -2,3 +2,4 @@
 4x-speed simple mp4 player
 T.ishii
 
+チケット起点AI実装の試行。

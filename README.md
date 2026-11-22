@@ -3,3 +3,4 @@
 T.ishii
 
 チケット起点AI実装の試行。
+実機確認はDebian/arm64。mac,windowsは将来確認。

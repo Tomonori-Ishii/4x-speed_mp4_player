@@ -3,6 +3,7 @@ import { isPlayableFileName } from '../lib/fileRules';
 import { MESSAGES } from '../lib/messages';
 import { DEFAULT_SPEED, stepSpeed } from '../lib/speed';
 import { DEFAULT_VOLUME, gainFor } from '../lib/volume';
+import { normalizeCues, readTx3gCues, type SubtitleCue } from '../lib/subtitles';
 
 /**
  * initial: nothing loaded yet (launch).   loading: a file is being read.
@@ -31,8 +32,10 @@ export function usePlayer(videoRef: RefObject<HTMLVideoElement | null>) {
   const [volume, setVolumeState] = useState(DEFAULT_VOLUME);
   const [loop, setLoopState] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [cues, setCues] = useState<SubtitleCue[]>([]);
 
   // Refs mirror state for use inside event handlers and the drop listener.
+  const loadTokenRef = useRef(0); // invalidates subtitle reads of an earlier file
   const statusRef = useRef<PlayerStatus>('initial');
   const busyRef = useRef(false); // true while a file is being read
   const objectUrlRef = useRef<string | null>(null);
@@ -84,6 +87,7 @@ export function usePlayer(videoRef: RefObject<HTMLVideoElement | null>) {
     setCurrentTime(0);
     setDuration(Number.NaN);
     setVideoSize({ width: 0, height: 0 });
+    setCues([]);
     setStatus('failed');
     setMessage(MESSAGES.unplayable);
   }, [releaseSource, setStatus]);
@@ -116,8 +120,21 @@ export function usePlayer(videoRef: RefObject<HTMLVideoElement | null>) {
       setCurrentTime(0);
       setDuration(Number.NaN);
       setVideoSize({ width: 0, height: 0 });
+      setCues([]);
       setStatus('loading');
       video.src = url;
+
+      // Spike: subtitles are read separately from playback. A failure only means no subtitles.
+      const token = ++loadTokenRef.current;
+      file
+        .arrayBuffer()
+        .then((data) => readTx3gCues(data))
+        .then((raw) => {
+          if (token === loadTokenRef.current) setCues(normalizeCues(raw));
+        })
+        .catch(() => {
+          if (token === loadTokenRef.current) setCues([]);
+        });
     },
     [releaseSource, setStatus, videoRef],
   );
@@ -178,6 +195,7 @@ export function usePlayer(videoRef: RefObject<HTMLVideoElement | null>) {
 
   // Stop everything and release resources when the page goes away (NFR-04).
   const dispose = useCallback((): void => {
+    loadTokenRef.current += 1;
     busyRef.current = false;
     resumeAfterLoadRef.current = false;
     videoRef.current?.pause();
@@ -245,6 +263,7 @@ export function usePlayer(videoRef: RefObject<HTMLVideoElement | null>) {
     volume,
     loop,
     message,
+    cues,
     loadFile,
     togglePlay,
     seek,

@@ -6,6 +6,7 @@ import { VideoArea } from './components/VideoArea';
 import { selectDroppedFile, type DropItemLike } from './lib/dropItems';
 import { clampSpecifiedWidth, computeDisplaySize, type Size } from './lib/layout';
 import { usePlayer } from './hooks/usePlayer';
+import { cueAt } from './lib/subtitles';
 
 const hasFiles = (e: DragEvent): boolean => Array.from(e.dataTransfer?.types ?? []).includes('Files');
 
@@ -34,6 +35,7 @@ export default function App() {
   const [dragging, setDragging] = useState(false);
   const dragDepth = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [subtitlesOn, setSubtitlesOn] = useState(true); // spike
 
   // Keep the latest loader for the window-level listeners below.
   const loadRef = useRef(player.loadFile);
@@ -149,6 +151,10 @@ export default function App() {
         onMeasure={onMeasure}
         onVideoClick={player.togglePlay}
         onResizeTo={onResizeTo}
+        subtitle={subtitlesOn ? (cueAt(player.cues, player.currentTime)?.text ?? null) : null}
+        hasSubtitles={player.cues.length > 0}
+        subtitlesOn={subtitlesOn}
+        onToggleSubtitles={() => setSubtitlesOn((on) => !on)}
       />
       <DropOverlay visible={dragging && player.status !== 'loading'} />
       <input

@@ -27,6 +27,12 @@ export interface VideoAreaProps {
   onVideoClick: () => void;
   /** Called during a resize drag with the requested width (logical px). */
   onResizeTo: (width: number) => void;
+  /** Spike: subtitle text for the current time, or null when none is shown. */
+  subtitle: string | null;
+  /** Spike: whether the file has any subtitle cues (shows the toggle). */
+  hasSubtitles: boolean;
+  subtitlesOn: boolean;
+  onToggleSubtitles: () => void;
 }
 
 /**
@@ -94,6 +100,17 @@ export function VideoArea(props: VideoAreaProps) {
           onClick={props.onVideoClick}
           {...props.mediaHandlers}
         />
+        {ready && props.subtitle !== null && (
+          // Spike: plain text node, never innerHTML (the subtitle text comes from the file).
+          <div className="subtitle" data-testid="subtitle">
+            {props.subtitle}
+          </div>
+        )}
+        {ready && props.hasSubtitles && (
+          <button type="button" className="subtitle-toggle" onClick={props.onToggleSubtitles} aria-pressed={props.subtitlesOn}>
+            {props.subtitlesOn ? 'Subtitles: On' : 'Subtitles: Off'}
+          </button>
+        )}
         {ready && resizeHandle}
       </div>
       {/* Without a video the handle stays visible, unavailable, in the area corner (FR-16). */}

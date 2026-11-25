@@ -195,3 +195,35 @@ body {
 .drop-overlay[hidden] {
   display: none;
 }
+
+/* Spike (feature/subtitle-spike): subtitle overlay and toggle. */
+.subtitle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6%;
+  /* Full width with auto margins, so the box is not shrunk to half the stage. */
+  width: fit-content;
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-family: "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: clamp(14px, 3.5vw, 26px);
+  line-height: 1.35;
+  text-align: center;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+.subtitle-toggle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 8px;
+  opacity: 0.85;
+}
